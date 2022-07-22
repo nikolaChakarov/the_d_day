@@ -36,6 +36,45 @@ const Form = () => {
     );
 };
 
-const FormContainer = styled.div``;
+const FormContainer = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .form-wrapper {
+        border: 1px solid var(--color-main);
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+
+        input {
+            padding: 7px;
+            border: 1px solid var(--color-main);
+            border-radius: 5px;
+            color: var(--color-gray);
+            margin-bottom: 10px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .letters-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            li {
+                background: var(--color-main);
+                padding: 5px;
+                border-radius: 5px;
+                display: flex;
+                justify-content: center;
+                color: #fff;
+                font-weight: 900;
+                box-shadow: inset 1px 3px 3px rgba(0, 0, 0, 0.3);
+            }
+        }
+    }
+`;
 
 export default Form;
