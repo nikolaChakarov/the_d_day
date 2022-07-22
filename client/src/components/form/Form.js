@@ -1,11 +1,20 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { GlobalContext } from "../../context/GlobalState";
+import useDebounce from "../../hooks/useDebounce";
 
 import { letters } from "../../utils/data";
 
 const Form = () => {
-    const { index, dispatch } = useContext(GlobalContext);
+    const { index, dispatch, isLoading, isError, getSongs, songs } =
+        useContext(GlobalContext);
+    const [query, setQuery] = useState("");
+
+    const debounced = useDebounce(query, 1000);
+
+    const handleSearchChange = (e) => {
+        setQuery(e.target.value);
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -17,6 +26,14 @@ const Form = () => {
         return () => clearTimeout(timer);
     }, [index]);
 
+    useEffect(() => {
+        if (debounced) {
+            getSongs(debounced);
+        }
+
+        console.log(songs);
+    }, [debounced]);
+
     return (
         <FormContainer className="form-container">
             <div className="form-wrapper">
@@ -24,6 +41,7 @@ const Form = () => {
                     className="search-el"
                     name="search"
                     placeholder="Search Band"
+                    onChange={handleSearchChange}
                 ></input>
 
                 <ul className="letters-wrapper">
