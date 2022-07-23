@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { GlobalContext } from "../../context/GlobalState";
 import useDebounce from "../../hooks/useDebounce";
 
-import { letters } from "../../utils/data";
-
 const Form = () => {
     const { index, dispatch, isLoading, isError, getSongs, songs } =
         useContext(GlobalContext);
     const [query, setQuery] = useState("");
+
+    const maxElOnScreen = 5;
 
     const debounced = useDebounce(query, 1000);
 
@@ -16,6 +16,7 @@ const Form = () => {
         setQuery(e.target.value);
     };
 
+    // rotate form elements; change index
     useEffect(() => {
         const timer = setTimeout(() => {
             dispatch({
@@ -26,13 +27,19 @@ const Form = () => {
         return () => clearTimeout(timer);
     }, [index]);
 
+    // handle debounced value; clear songs array
     useEffect(() => {
+        dispatch({
+            type: "RESET_SONGS",
+        });
+
         if (debounced) {
             getSongs(debounced);
         }
-
-        console.log(songs);
     }, [debounced]);
+
+    // re-render if songs array has changed
+    useEffect(() => {}, [songs]);
 
     return (
         <FormContainer className="form-container">
@@ -45,8 +52,13 @@ const Form = () => {
                 ></input>
 
                 <ul className="letters-wrapper">
-                    {letters.map((letter, i) => (
-                        <li key={i}>{letters[(index + i) % letters.length]}</li>
+                    {songs.map((letter, i) => (
+                        <li
+                            key={i}
+                            className={i >= maxElOnScreen ? "hidden" : ""}
+                        >
+                            {songs[(index + i) % songs.length]}
+                        </li>
                     ))}
                 </ul>
             </div>
@@ -62,6 +74,7 @@ const FormContainer = styled.div`
     justify-content: center;
 
     .form-wrapper {
+        min-width: 600px;
         border: 1px solid var(--color-main);
         padding: 20px;
         border-radius: 5px;
@@ -83,13 +96,18 @@ const FormContainer = styled.div`
 
             li {
                 background: var(--color-main);
-                padding: 5px;
+                padding: 10px;
                 border-radius: 5px;
                 display: flex;
                 justify-content: center;
                 color: #fff;
                 font-weight: 900;
                 box-shadow: inset 1px 3px 3px rgba(0, 0, 0, 0.3);
+                font-size: 14px;
+            }
+            // by design, we see only 5 items at once
+            li.hidden {
+                display: none;
             }
         }
     }

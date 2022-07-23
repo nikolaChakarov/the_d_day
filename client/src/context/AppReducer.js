@@ -1,3 +1,5 @@
+import { letters } from "../utils/data";
+
 const AppReducer = (state, action) => {
     switch (action.type) {
         case "UP_INDEX":
@@ -27,10 +29,15 @@ const AppReducer = (state, action) => {
                 isError: null,
                 isLoading: false,
             };
-        case "GET_SONGS":
+        case "ADD_SONGS":
             return {
                 ...state,
-                songs: [...action.payload],
+                songs: [...state.songs, ...action.payload],
+            };
+        case "RESET_SONGS":
+            return {
+                ...state,
+                songs: [...letters],
             };
 
         default:
